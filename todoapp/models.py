@@ -40,6 +40,3 @@ class Task(Base):
     class Meta:
         verbose_name = 'Tarefa'
         verbose_name_plural = 'Tarefas'
-
-    def __str__(self):
-        return self.description
