@@ -12,4 +12,4 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at', 'updated_at', 'active')
-    filter_vertical = ('tags',)
+    filter_horizontal = ('tags',)
