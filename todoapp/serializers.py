@@ -11,7 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ('name', 'created_at', 'updated_at', 'active')
+        fields = ('name', 'created_at', 'updated_at', 'active', 'tags')
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
