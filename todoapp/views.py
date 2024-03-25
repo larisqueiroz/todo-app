@@ -1,15 +1,22 @@
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Tag, Task, Card
 from .serializers import TaskSerializer, TagSerializer, CardSerializer
 import datetime
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render
 
 class TagAPIView(APIView):
     def get(self, request):
-        tags = Tag.objects.all()
-        serializer = TagSerializer(tags, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        tags = Tag.objects.all().filter(active=True)
+
+        paginator = PageNumberPagination()
+        paged = paginator.paginate_queryset(tags, request)
+        serializer = TagSerializer(paged, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = TagSerializer(data=request.data)
@@ -24,7 +31,7 @@ class TagAPIView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            tag = Tag.objects.get(id=id)
+            tag = Tag.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -45,7 +52,7 @@ class TagAPIView(APIView):
 class TagDetailView(APIView):
     def get(self, request, id):
         try:
-            tag = Tag.objects.get(id=id)
+            tag = Tag.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = TagSerializer(tag)
@@ -53,7 +60,7 @@ class TagDetailView(APIView):
 
     def delete(self, request, id):
         try:
-            tag = Tag.objects.get(id=id)
+            tag = Tag.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -69,9 +76,12 @@ class TagDetailView(APIView):
 
 class TaskAPIView(APIView):
     def get(self, request):
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        tasks = Task.objects.all().filter(active=True)
+
+        paginator = PageNumberPagination()
+        paged = paginator.paginate_queryset(tasks, request)
+        serializer = TaskSerializer(paged, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = TaskSerializer(data=request.data)
@@ -86,7 +96,7 @@ class TaskAPIView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            task = Task.objects.get(id=id)
+            task = Task.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -105,7 +115,7 @@ class TaskAPIView(APIView):
 class TaskDetailView(APIView):
     def get(self, request, id):
         try:
-            task = Task.objects.get(id=id)
+            task = Task.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = TaskSerializer(task)
@@ -113,7 +123,7 @@ class TaskDetailView(APIView):
 
     def delete(self, request, id):
         try:
-            task = Task.objects.get(id=id)
+            task = Task.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -129,9 +139,12 @@ class TaskDetailView(APIView):
 
 class CardAPIView(APIView):
     def get(self, request):
-        cards = Card.objects.all()
-        serializer = CardSerializer(cards, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        cards = Card.objects.all().filter(active=True)
+
+        paginator = PageNumberPagination()
+        paged = paginator.paginate_queryset(cards, request)
+        serializer = CardSerializer(paged, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = CardSerializer(data=request.data)
@@ -146,7 +159,7 @@ class CardAPIView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            card = Card.objects.get(id=id)
+            card = Card.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -168,7 +181,7 @@ class CardAPIView(APIView):
 class CardDetailView(APIView):
     def get(self, request, id):
         try:
-            card = Card.objects.get(id=id)
+            card = Card.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = CardSerializer(card)
@@ -176,7 +189,7 @@ class CardDetailView(APIView):
 
     def delete(self, request, id):
         try:
-            card = Card.objects.get(id=id)
+            card = Card.objects.filter(active=True).get(id=id)
         except:
             return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
