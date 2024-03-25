@@ -23,7 +23,10 @@ class TagAPIView(APIView):
         if id is None:
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        tag = Tag.objects.get(id=id)
+        try:
+            tag = Tag.objects.get(id=id)
+        except:
+            return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if request.data['name'] is not None:
             tag.name = request.data['name']
@@ -41,9 +44,28 @@ class TagAPIView(APIView):
 
 class TagDetailView(APIView):
     def get(self, request, id):
-        tag = Tag.objects.get(id=id)
+        try:
+            tag = Tag.objects.get(id=id)
+        except:
+            return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = TagSerializer(tag)
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request, id):
+        try:
+            tag = Tag.objects.get(id=id)
+        except:
+            return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        tag.active = False
+        tag.updated_at = str(datetime.datetime.now())
+
+        tag.save()
+
+        serializer = TagSerializer(tag)
+
+        return Response(serializer.data, status.HTTP_204_NO_CONTENT)
+
 
 class TaskAPIView(APIView):
     def get(self, request):
@@ -63,7 +85,10 @@ class TaskAPIView(APIView):
         if id is None:
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        task = Task.objects.get(id=id)
+        try:
+            task = Task.objects.get(id=id)
+        except:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if request.data['description'] is not None:
             task.description = request.data['description']
@@ -76,11 +101,31 @@ class TaskAPIView(APIView):
 
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class TaskDetailView(APIView):
     def get(self, request, id):
-        task = Task.objects.get(id=id)
+        try:
+            task = Task.objects.get(id=id)
+        except:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = TaskSerializer(task)
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request, id):
+        try:
+            task = Task.objects.get(id=id)
+        except:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        task.active = False
+        task.updated_at = str(datetime.datetime.now())
+
+        task.save()
+
+        serializer = TaskSerializer(task)
+
+        return Response(serializer.data, status.HTTP_204_NO_CONTENT)
+
 
 class CardAPIView(APIView):
     def get(self, request):
@@ -100,7 +145,10 @@ class CardAPIView(APIView):
         if id is None:
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        card = Card.objects.get(id=id)
+        try:
+            card = Card.objects.get(id=id)
+        except:
+            return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if request.data['name'] is not None:
             card.name = request.data['name']
@@ -119,6 +167,24 @@ class CardAPIView(APIView):
 
 class CardDetailView(APIView):
     def get(self, request, id):
-        card = Card.objects.get(id=id)
+        try:
+            card = Card.objects.get(id=id)
+        except:
+            return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = CardSerializer(card)
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request, id):
+        try:
+            card = Card.objects.get(id=id)
+        except:
+            return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        card.active = False
+        card.updated_at = str(datetime.datetime.now())
+
+        card.save()
+
+        serializer = CardSerializer(card)
+
+        return Response(serializer.data, status.HTTP_204_NO_CONTENT)
