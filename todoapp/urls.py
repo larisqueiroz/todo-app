@@ -16,12 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import TagAPIView, CardAPIView, TaskAPIView
+from .views import TagAPIView, CardAPIView, TaskAPIView, TagDetailView, CardDetailView, TaskDetailView
 
 urlpatterns = [
     path('api/v1/tags/', TagAPIView.as_view(), name='Categorias'),
+    path('api/v1/tags/<uuid:id>/', TagDetailView.as_view(), name='tag_by_id'),
     path('api/v1/tasks/', TaskAPIView.as_view(), name='Tarefas'),
+    path('api/v1/tasks/<uuid:id>/', TaskDetailView.as_view(), name='task_by_id'),
     path('api/v1/cards/', CardAPIView.as_view(), name='Cartões'),
+    path('api/v1/cards/<uuid:id>/', CardDetailView.as_view(), name='card_by_id'),
     path('admin/', admin.site.urls),
     path('auth/', include('rest_framework.urls')),
 ]

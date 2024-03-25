@@ -5,15 +5,15 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = (
-            'description', 'card', 'finished', 'created_at', 'updated_at', 'active'
+            'id','description', 'card', 'finished', 'created_at', 'updated_at', 'active'
         )
 
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ('name', 'created_at', 'updated_at', 'active', 'tags')
+        fields = ('id', 'name', 'created_at', 'updated_at', 'active', 'tags')
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name', 'color', 'created_at', 'updated_at', 'active')
+        fields = ('id', 'name', 'color', 'created_at', 'updated_at', 'active')

@@ -16,6 +16,12 @@ class TagAPIView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class TagDetailView(APIView):
+    def get(self, request, id):
+        tag = Tag.objects.get(id=id)
+        serializer = TagSerializer(tag)
+        return Response(serializer.data, status.HTTP_200_OK)
+
 class TaskAPIView(APIView):
     def get(self, request):
         tasks = Task.objects.all()
@@ -28,6 +34,12 @@ class TaskAPIView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class TaskDetailView(APIView):
+    def get(self, request, id):
+        task = Task.objects.get(id=id)
+        serializer = TaskSerializer(task)
+        return Response(serializer.data, status.HTTP_200_OK)
+
 class CardAPIView(APIView):
     def get(self, request):
         cards = Card.objects.all()
@@ -39,3 +51,9 @@ class CardAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CardDetailView(APIView):
+    def get(self, request, id):
+        card = Card.objects.get(id=id)
+        serializer = CardSerializer(card)
+        return Response(serializer.data, status.HTTP_200_OK)
