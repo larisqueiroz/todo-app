@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Task, Card, Tag
+from .models import *
+from django.contrib.auth.models import User
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,3 +25,8 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = (
             'id','description', 'card', 'finished', 'created_at', 'updated_at', 'active'
         )
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'is_active')
