@@ -20,13 +20,13 @@ from .views import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
-    path('api/v1/tags/', TagAPIView.as_view(), name='Categorias'),
-    path('api/v1/tags/<uuid:id>/', TagDetailView.as_view(), name='tag_by_id'),
-    path('api/v1/tasks/', TaskAPIView.as_view(), name='Tarefas'),
-    path('api/v1/tasks/<uuid:id>/', TaskDetailView.as_view(), name='task_by_id'),
-    path('api/v1/cards/', CardAPIView.as_view(), name='Cartões'),
-    path('api/v1/cards/<uuid:id>/', CardDetailView.as_view(), name='card_by_id'),
+    path('tags/', TagAPIView.as_view(), name='categories'),
+    path('tags/<uuid:id>/', TagDetailView.as_view(), name='tag_by_id'),
+    path('tasks/', TaskAPIView.as_view(), name='tasks'),
+    path('tasks/<uuid:id>/', TaskDetailView.as_view(), name='task_by_id'),
+    path('cards/', CardAPIView.as_view(), name='cards'),
+    path('cards/<uuid:id>/', CardDetailView.as_view(), name='card_by_id'),
     path('admin/', admin.site.urls),
-    path('api/v1/users/', UserAPIView.as_view(), name='users'),
-    path('api/v1/login/', UserLogin.as_view(), name='login')
+    path('users/', UserAPIView.as_view(), name='users'),
+    path('login/', UserLogin.as_view(), name='login')
 ]

@@ -1,22 +1,16 @@
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Tag, Task, Card
-from .serializers import TaskSerializer, TagSerializer, CardSerializer, UserSerializer
+from .serializers import *
 import datetime
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import login, authenticate
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
 
 class TagAPIView(APIView):
     def get(self, request):
@@ -32,10 +26,15 @@ class TagAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
-        serializer = TagSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if request.user.is_authenticated:
+            serializer = TagSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.validated_data['username'] = request.user.username
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
         id = request.data['id']
@@ -170,10 +169,25 @@ class CardAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
-        serializer = CardSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if request.user.is_authenticated:
+            serializer = CardSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.validated_data['user_id'] = request.user.id
+            print(request.data)
+            card_saved = serializer.save()
+            print(card_saved)
+            print(type(card_saved))
+            print(card_saved.id)
+            if (len(request.data['tags']) > 0):
+                for tag_id in request.data['tags']:
+                    saved_tag = Tag.objects.get(id=tag_id['id'])
+                    if saved_tag is not None and saved_tag.username == request.user.username:
+                        card = Card.objects.get(id=card_saved.id)
+                        card.tags.add(tag_id['id'])
+                        card.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
         id = request.data['id']

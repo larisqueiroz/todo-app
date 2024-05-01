@@ -132,22 +132,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 3,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        #'rest_framework_simplejwt.authentication.authentication.JWTAuthentication'
+        'rest_framework.authentication.SessionAuthentication'
     ],
-    #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',)
 }
 
 CSRF_TRUSTED_ORIGINS = [
 "http://localhost:8080 3"]
-
-#CORS_ALLOW_CREDENTIALS = True
-
-#AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
-
-"""SESSION_COOKIE_SECURE = False
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-LOGIN_REDIRECT_URL = '/api/v1/users'
-LOGIN_URL = 'login'"""

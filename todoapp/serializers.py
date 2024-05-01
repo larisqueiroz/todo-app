@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'created_at', 'updated_at', 'active')
+        fields = ('id', 'name', 'color', 'created_at', 'updated_at', 'active', 'username')
 
 class CardSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
@@ -13,13 +13,11 @@ class CardSerializer(serializers.ModelSerializer):
     #tags = serializers.PrimaryKeyRelatedField(many= True, read_only=True)
     class Meta:
         model = Card
-        fields = ('id', 'name', 'created_at', 'updated_at', 'active', 'tags')
+        fields = ('id', 'name', 'created_at', 'updated_at', 'active', 'tags', 'user_id')
 
 class TaskSerializer(serializers.ModelSerializer):
     card = CardSerializer(many= False, read_only=True)
 
-    #pk relanshinship
-    #card = serializers.PrimaryKeyRelatedField(many= False, read_only=True)
     class Meta:
         model = Task
         fields = (
@@ -29,4 +27,4 @@ class TaskSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'is_active')
+        fields = ('id', 'username', 'email', 'is_active')
