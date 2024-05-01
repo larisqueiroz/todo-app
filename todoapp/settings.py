@@ -133,9 +133,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework_simplejwt.authentication.authentication.JWTAuthentication'
     ],
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',)
 }
+
+CSRF_TRUSTED_ORIGINS = [
+"http://localhost:8080 3"]
 
 #CORS_ALLOW_CREDENTIALS = True
 

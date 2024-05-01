@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
@@ -18,16 +19,17 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 class TagAPIView(APIView):
-    authentication_classes = [TokenAuthentication]  # Autenticação por token
-    permission_classes = [IsAuthenticated]
     def get(self, request):
-        tags = Tag.objects.all().filter(active=True)
+        if request.user.is_authenticated:
+            tags = Tag.objects.all().order_by('id').filter(active=True)
 
-        paginator = PageNumberPagination()
-        paged = paginator.paginate_queryset(tags, request)
-        serializer = TagSerializer(paged, many=True)
+            paginator = PageNumberPagination()
+            paged = paginator.paginate_queryset(tags, request)
+            serializer = TagSerializer(paged, many=True)
 
-        return paginator.get_paginated_response(serializer.data)
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
         serializer = TagSerializer(data=request.data)
@@ -88,15 +90,16 @@ class TagDetailView(APIView):
 
 
 class TaskAPIView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
     def get(self, request):
-        tasks = Task.objects.all().filter(active=True)
+        if request.user.is_authenticated:
+            tasks = Task.objects.all().order_by('id').filter(active=True)
 
-        paginator = PageNumberPagination()
-        paged = paginator.paginate_queryset(tasks, request)
-        serializer = TaskSerializer(paged, many=True)
-        return paginator.get_paginated_response(serializer.data)
+            paginator = PageNumberPagination()
+            paged = paginator.paginate_queryset(tasks, request)
+            serializer = TaskSerializer(paged, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
         serializer = TaskSerializer(data=request.data)
@@ -155,15 +158,16 @@ class TaskDetailView(APIView):
 
 
 class CardAPIView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
     def get(self, request):
-        cards = Card.objects.all().filter(active=True)
+        if request.user.is_authenticated:
+            cards = Card.objects.all().order_by('id').filter(active=True)
 
-        paginator = PageNumberPagination()
-        paged = paginator.paginate_queryset(cards, request)
-        serializer = CardSerializer(paged, many=True)
-        return paginator.get_paginated_response(serializer.data)
+            paginator = PageNumberPagination()
+            paged = paginator.paginate_queryset(cards, request)
+            serializer = CardSerializer(paged, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
         serializer = CardSerializer(data=request.data)
@@ -242,7 +246,7 @@ class UserAPIView(APIView):
         print(request.user)
         if request.user.is_authenticated:
             try:
-                users = User.objects.all().filter(is_active=True)
+                users = User.objects.all().order_by('id').filter(is_active=True)
                 paginator = PageNumberPagination()
                 paged = paginator.paginate_queryset(users, request)
                 serializer = UserSerializer(paged, many=True)
@@ -253,12 +257,17 @@ class UserAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserLogin(APIView):
+    @csrf_exempt
     def post(self, request):
         try:
             saved = User.objects.filter(is_active=True).get(username=request.data['username'])
             print(request.data['username'])
             print(request.data['password'])
             #backend = 'django.contrib.auth.backends.ModelBackend'
+            if saved is None:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            if not saved.check_password(request.data['password']):
+                return Response({"error": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
             user = authenticate(request=request, username=request.data['username'], password=request.data['password'])
             print(user.backend)
             if user is not None:
@@ -266,8 +275,8 @@ class UserLogin(APIView):
                     login(request=request, user=user, backend=user.backend)
                     print(user.is_authenticated)
                     token, created = Token.objects.get_or_create(user=user)
-                    #return Response({"username": request.data['username'], "token": token.key}, status=status.HTTP_200_OK)
-                    return redirect('/api/v1/users/')
+                    return Response({"username": request.data['username'], "token": token.key}, status=status.HTTP_200_OK)
+                    #return redirect('/api/v1/users/')
                 except ValueError as e:
                     return Response({"error": f"You have multiple authentication backends. {e}"}, status=status.HTTP_400_BAD_REQUEST)
                 except TypeError as t:
@@ -275,8 +284,8 @@ class UserLogin(APIView):
                 except AttributeError as a:
                     return Response({"error": f"backend error. {a}"}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                #return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-                return redirect('/api/v1/login/')
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+                #return redirect('/api/v1/login/')
         except ValueError as e:
             return Response({"error": f"Error while signing in. {e}"}, status=status.HTTP_400_BAD_REQUEST)
         except TypeError as t:
