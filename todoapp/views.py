@@ -310,9 +310,7 @@ class UserDetailAPIView(APIView):
     def delete(self, request, id):
         if request.user.is_authenticated:
             try:
-                print(id)
                 user = User.objects.filter(is_active=True).get(id=id)
-                print(user)
             except:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -324,6 +322,40 @@ class UserDetailAPIView(APIView):
             serializer = UserSerializer(user)
 
             return Response(serializer.data, status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+class UserCardsView(APIView):
+    def get(self, request, id):
+        if request.user.is_authenticated:
+            if id is None:
+                return Response({"error": "Identifier is required"}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = User.objects.filter(is_active=True).get(id=id)
+            except:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            try:
+                cards = Card.objects.filter(active=True).filter(user_id=id)
+                return Response(cards.values(), status=status.HTTP_200_OK)
+            except:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+class UserTagsView(APIView):
+    def get(self, request, id):
+        if request.user.is_authenticated:
+            if id is None:
+                return Response({"error": "Identifier is required"}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = User.objects.filter(is_active=True).get(id=id)
+            except:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            try:
+                tags = Tag.objects.filter(active=True).filter(username=user.username)
+                return Response(tags.values(), status=status.HTTP_200_OK)
+            except:
+                return Response({"error": "Error while getting data"}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
