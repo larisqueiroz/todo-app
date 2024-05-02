@@ -246,10 +246,13 @@ class UserAPIView(APIView):
         try:
             serializer = UserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            user = User.objects.get(username=request.data['username']).filter(is_active=True)
-            if user:
+            user = User.objects.all().filter(username=request.data['username']).filter(is_active=True).first()
+            print(user)
+            if user is not None:
                 return Response({"erros": "user already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            print("2")
             user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
+            print("3")
             token = Token.objects.create(user=user)
             user.save()
             return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
@@ -267,6 +270,60 @@ class UserAPIView(APIView):
                 return paginator.get_paginated_response(serializer.data)
             except:
                 return Response({"error": "Error while getting data."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def put(self, request):
+        if request.user.is_authenticated:
+            if request.data['id'] is None:
+                return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            id = request.data['id']
+            try:
+                saved = User.objects.filter(is_active=True).get(id=id)
+            except:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            if request.data['email'] != saved.email:
+                saved.email = request.data['email']
+                saved.save()
+                user = User.objects.filter(is_active=True).filter(id=id).values('id', 'username', 'email', 'is_active').first()
+                print(type(user))
+
+                return Response(user, status.HTTP_200_OK)
+
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+class UserDetailAPIView(APIView):
+    def get(self, request, id):
+        if request.user.is_authenticated:
+            try:
+                user = User.objects.filter(is_active=True).get(id=id)
+            except:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def delete(self, request, id):
+        if request.user.is_authenticated:
+            try:
+                print(id)
+                user = User.objects.filter(is_active=True).get(id=id)
+                print(user)
+            except:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            user.is_active = False
+            user.updated_at = str(datetime.datetime.now())
+
+            user.save()
+
+            serializer = UserSerializer(user)
+
+            return Response(serializer.data, status.HTTP_204_NO_CONTENT)
         else:
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 

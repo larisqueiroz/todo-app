@@ -26,6 +26,7 @@ urlpatterns = [
     path('tasks/<uuid:id>/', TaskDetailView.as_view(), name='task_by_id'),
     path('cards/', CardAPIView.as_view(), name='cards'),
     path('cards/<uuid:id>/', CardDetailView.as_view(), name='card_by_id'),
+    path('users/<int:id>/', UserDetailAPIView.as_view(), name='user_by_id'),
     path('admin/', admin.site.urls),
     path('users/', UserAPIView.as_view(), name='users'),
     path('login/', UserLogin.as_view(), name='login')
