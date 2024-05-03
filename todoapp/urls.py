@@ -32,5 +32,6 @@ urlpatterns = [
     path('users/<int:id>/tags/', UserTagsView.as_view(), name='tags_by_user'),
     path('admin/', admin.site.urls),
     path('users/', UserAPIView.as_view(), name='users'),
-    path('login/', UserLogin.as_view(), name='login')
+    path('login/', UserLogin.as_view(), name='login'),
+    path('logout/', UserLogout.as_view(), name='logout')
 ]

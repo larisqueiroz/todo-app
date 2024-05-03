@@ -7,7 +7,8 @@ from .serializers import *
 import datetime
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+
 
 class TagAPIView(APIView):
     def get(self, request):
@@ -442,3 +443,11 @@ class UserLogin(APIView):
             return Response({"error": f"Error while signing in. {t}"}, status=status.HTTP_400_BAD_REQUEST)
         except AttributeError as a:
             return Response({"error": f"Error while signing in. {a}"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserLogout(APIView):
+    def post(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            return Response({"success": "Finished session"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "Not authenticated"}, status=status.HTTP_400_BAD_REQUEST)
