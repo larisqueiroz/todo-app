@@ -26,6 +26,9 @@ class TagAPIView(APIView):
     def post(self, request):
         if request.data.get('name') is None:
             return Response({"error": "Name is required."}, status=status.HTTP_400_BAD_REQUEST)
+        tag = Tag.objects.filter(active=True).filter(username=request.user.username).filter(name=request.data.get('name')).first()
+        if tag is not None:
+            return Response({"error": "Tag already exists."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             serializer = TagSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -299,21 +302,23 @@ class CardTasksView(APIView):
 
 class UserAPIView(APIView):
     def post(self, request):
-        if request.data.get('username') or request.data.get('password') is None:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_superuser:
-            try:
-                serializer = UserSerializer(data=request.data)
-                serializer.is_valid(raise_exception=True)
-                user = User.objects.all().filter(username=request.data.get('username')).filter(is_active=True).first()
-                if user is not None:
-                    return Response({"erros": "user already exists."}, status=status.HTTP_400_BAD_REQUEST)
-                user = User.objects.create_user(username=request.data.get('username'), password=request.data.get('password'))
-                token = Token.objects.create(user=user)
-                user.save()
-                return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
-            except:
-                return Response({"error": "Error while saving new user."}, status=status.HTTP_400_BAD_REQUEST)
+            if request.data.get('username') is None or request.data.get('password') is None or request.data.get('email')\
+                    is None:
+                return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+            if request.user.is_superuser:
+                try:
+                    serializer = UserSerializer(data=request.data)
+                    serializer.is_valid(raise_exception=True)
+                    user = User.objects.all().filter(username=request.data.get('username')).filter(is_active=True).first()
+                    if user is not None:
+                        return Response({"erros": "user already exists."}, status=status.HTTP_400_BAD_REQUEST)
+                    user = User.objects.create_user(username=request.data.get('username'), password=request.data.get('password'))
+                    token = Token.objects.create(user=user)
+                    user.save()
+                    return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
+                except:
+                    return Response({"error": "Error while saving new user."}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "User not allowed."}, status=status.HTTP_401_UNAUTHORIZED)
 
