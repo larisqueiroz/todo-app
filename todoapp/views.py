@@ -23,6 +23,8 @@ class TagAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
+        if request.data.get('name') is None:
+            return Response({"error": "Name is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             serializer = TagSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -34,8 +36,10 @@ class TagAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
+        if request.data.get('id') is None:
+            return Response({"error": "Identifier is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
-            id = request.data['id']
+            id = request.data.get('id')
 
             if id is None:
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -45,11 +49,11 @@ class TagAPIView(APIView):
             except:
                 return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            if request.data['name'] is not None:
-                tag.name = request.data['name']
+            if request.data.get('name') is not None:
+                tag.name = request.data.get('name')
 
-            if request.data['color'] is not None:
-                tag.color = request.data['color']
+            if request.data.get('color') is not None:
+                tag.color = request.data.get('color')
 
             tag.updated_at = str(datetime.datetime.now())
 
@@ -63,6 +67,8 @@ class TagAPIView(APIView):
 
 class TagDetailView(APIView):
     def get(self, request, id):
+        if id is None:
+            return Response({"error": "Identifier is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
                 tag = Tag.objects.filter(active=True).get(id=id)
@@ -74,6 +80,8 @@ class TagDetailView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request, id):
+        if id is None:
+            return Response({"error": "Identifier is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
                 tag = Tag.objects.filter(active=True).get(id=id)
@@ -104,8 +112,10 @@ class TaskAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
+        if request.data.get('description') is None:
+            return Response({"error": "Description required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
-            card_id = request.data['card_id']
+            card_id = request.data.get('card_id')
             card = Card.objects.filter(active=True).get(id=card_id)
             serializer = TaskSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -117,7 +127,7 @@ class TaskAPIView(APIView):
 
     def put(self, request):
         if request.user.is_authenticated:
-            id = request.data['id']
+            id = request.data.get('id')
 
             if id is None:
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -127,8 +137,11 @@ class TaskAPIView(APIView):
             except:
                 return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            if request.data['description'] is not None:
-                task.description = request.data['description']
+            if request.data.get('description') is not None:
+                task.description = request.data.get('description')
+
+            if request.data.get('finished') is not None:
+                task.finished = request.data.get('finished')
 
             task.updated_at = str(datetime.datetime.now())
 
@@ -143,6 +156,8 @@ class TaskAPIView(APIView):
 
 class TaskDetailView(APIView):
     def get(self, request, id):
+        if id is None:
+            return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
                 task = Task.objects.filter(active=True).get(id=id)
@@ -154,6 +169,8 @@ class TaskDetailView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request, id):
+        if id is None:
+            return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
                 task = Task.objects.filter(active=True).get(id=id)
@@ -185,25 +202,20 @@ class CardAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request):
+        if request.data.get('name') is None:
+            return Response({"error": "Name required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             serializer = CardSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.validated_data['user_id'] = request.user.id
-            card_saved = serializer.save()
-            if (len(request.data['tags']) > 0):
-                for tag_id in request.data['tags']:
-                    saved_tag = Tag.objects.get(id=tag_id['id'])
-                    if saved_tag is not None and saved_tag.username == request.user.username:
-                        card = Card.objects.get(id=card_saved.id)
-                        card.tags.add(tag_id['id'])
-                        card.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
         if request.user.is_authenticated:
-            id = request.data['id']
+            id = request.data.get('id')
 
             if id is None:
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -213,13 +225,16 @@ class CardAPIView(APIView):
             except:
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            if request.data['name'] is not None:
-                card.name = request.data['name']
+            if request.data.get('name') is not None:
+                card.name = request.data.get('name')
 
-            if request.data['tags'] is not None:
-                for item in request.data['tags']:
+            if request.data.get('tags') is not None:
+                for item in request.data.get('tags'):
                     saved_item = Tag.objects.filter(active=True).get(id=item['id'])
                     card.tags.add(saved_item)
+
+            if request.data.get('finished') is True:
+                card.finished = request.data.get('finished')
 
             card.updated_at = str(datetime.datetime.now())
 
@@ -274,7 +289,7 @@ class CardTasksView(APIView):
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
             try:
                 tasks = Task.objects.filter(active=True).filter(card_id=card.id)
-                return Response(tasks.values(), status=status.HTTP_200_OK)
+                return Response(TaskSerializer(tasks, many=True).data, status=status.HTTP_200_OK)
             except:
                 return Response({"error": "Error while getting data"}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -283,24 +298,26 @@ class CardTasksView(APIView):
 
 class UserAPIView(APIView):
     def post(self, request):
-        if request.user.is_authenticated:
+        if request.data.get('username') or request.data.get('password') is None:
+            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_superuser:
             try:
                 serializer = UserSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                user = User.objects.all().filter(username=request.data['username']).filter(is_active=True).first()
+                user = User.objects.all().filter(username=request.data.get('username')).filter(is_active=True).first()
                 if user is not None:
                     return Response({"erros": "user already exists."}, status=status.HTTP_400_BAD_REQUEST)
-                user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
+                user = User.objects.create_user(username=request.data.get('username'), password=request.data.get('password'))
                 token = Token.objects.create(user=user)
                 user.save()
                 return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
             except:
                 return Response({"error": "Error while saving new user."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "User not allowed."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def get(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_superuser:
             try:
                 users = User.objects.all().order_by('id').filter(is_active=True)
                 paginator = PageNumberPagination()
@@ -310,21 +327,21 @@ class UserAPIView(APIView):
             except:
                 return Response({"error": "Error while getting data."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "User not allowed."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request):
         if request.user.is_authenticated:
-            if request.data['id'] is None:
+            if request.data.get('id') is None:
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
-            id = request.data['id']
+            id = request.data.get('id')
             try:
                 saved = User.objects.filter(is_active=True).get(id=id)
             except:
                 return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            if request.data['email'] != saved.email:
-                saved.email = request.data['email']
+            if request.data.get('email') is not None:
+                saved.email = request.data.get('email')
                 saved.save()
                 user = User.objects.filter(is_active=True).filter(id=id).values('id', 'username', 'email', 'is_active').first()
 
@@ -346,7 +363,7 @@ class UserDetailAPIView(APIView):
             return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request, id):
-        if request.user.is_authenticated:
+        if request.user.is_superuser:
             try:
                 user = User.objects.filter(is_active=True).get(id=id)
             except:
@@ -361,7 +378,7 @@ class UserDetailAPIView(APIView):
 
             return Response(serializer.data, status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "User not allowed."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserCardsView(APIView):
     def get(self, request, id):
@@ -374,7 +391,7 @@ class UserCardsView(APIView):
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             try:
                 cards = Card.objects.filter(active=True).filter(user_id=id)
-                return Response(cards.values(), status=status.HTTP_200_OK)
+                return Response(CardSerializer(cards, many=True).data, status=status.HTTP_200_OK)
             except:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -391,7 +408,7 @@ class UserTagsView(APIView):
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             try:
                 tags = Tag.objects.filter(active=True).filter(username=user.username)
-                return Response(tags.values(), status=status.HTTP_200_OK)
+                return Response(TagSerializer(tags, many=True).data, status=status.HTTP_200_OK)
             except:
                 return Response({"error": "Error while getting data"}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -401,17 +418,17 @@ class UserLogin(APIView):
     @csrf_exempt
     def post(self, request):
         try:
-            saved = User.objects.filter(is_active=True).get(username=request.data['username'])
+            saved = User.objects.filter(is_active=True).get(username=request.data.get('username'))
             if saved is None:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-            if not saved.check_password(request.data['password']):
+            if not saved.check_password(request.data.get('password')):
                 return Response({"error": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
-            user = authenticate(request=request, username=request.data['username'], password=request.data['password'])
+            user = authenticate(request=request, username=request.data.get('username'), password=request.data.get('password'))
             if user is not None:
                 try:
-                    login(request=request, user=user, backend=user.backend)
+                    login(request=request, user=user)
                     token, created = Token.objects.get_or_create(user=user)
-                    return Response({"username": request.data['username'], "token": token.key}, status=status.HTTP_200_OK)
+                    return Response({"username": request.data.get('username'), "token": token.key}, status=status.HTTP_200_OK)
                 except ValueError as e:
                     return Response({"error": f"You have multiple authentication backends. {e}"}, status=status.HTTP_400_BAD_REQUEST)
                 except TypeError as t:

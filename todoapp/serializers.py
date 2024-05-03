@@ -10,10 +10,9 @@ class TagSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
 
-    #tags = serializers.PrimaryKeyRelatedField(many= True, read_only=True)
     class Meta:
         model = Card
-        fields = ('id', 'name', 'created_at', 'updated_at', 'active', 'tags', 'user_id')
+        fields = ('id', 'name', 'created_at', 'updated_at', 'active', 'tags', 'user_id', 'finished')
 
 class TaskSerializer(serializers.ModelSerializer):
     card = CardSerializer(many= False, read_only=True)

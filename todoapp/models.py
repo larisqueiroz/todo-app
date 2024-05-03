@@ -14,7 +14,7 @@ class Base(models.Model):
 class Tag(Base):
     name = models.CharField(max_length=100)
     color = models.CharField(max_length=10)
-    username = models.CharField(max_length=20,default=None, blank=True, null=True,db_default=None)
+    username = models.CharField(max_length=20,default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Category'
@@ -25,8 +25,9 @@ class Tag(Base):
 
 class Card(Base):
     name = models.CharField(max_length=100)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    finished = models.BooleanField(default=False, null=False)
 
     class Meta:
         verbose_name = 'Card'
