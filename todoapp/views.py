@@ -12,7 +12,7 @@ from django.contrib.auth import login, authenticate
 class TagAPIView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            tags = Tag.objects.all().order_by('id').filter(active=True)
+            tags = Tag.objects.all().order_by('id').filter(active=True).filter(username=request.user.username)
 
             paginator = PageNumberPagination()
             paged = paginator.paginate_queryset(tags, request)
@@ -45,7 +45,7 @@ class TagAPIView(APIView):
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                tag = Tag.objects.filter(active=True).get(id=id)
+                tag = Tag.objects.filter(active=True).filter(username=request.user.username).get(id=id)
             except:
                 return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -71,7 +71,7 @@ class TagDetailView(APIView):
             return Response({"error": "Identifier is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
-                tag = Tag.objects.filter(active=True).get(id=id)
+                tag = Tag.objects.filter(active=True).filter(username=request.user.username).get(id=id)
             except:
                 return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
             serializer = TagSerializer(tag)
@@ -84,7 +84,7 @@ class TagDetailView(APIView):
             return Response({"error": "Identifier is required."}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
-                tag = Tag.objects.filter(active=True).get(id=id)
+                tag = Tag.objects.filter(active=True).filter(username=request.user.username).get(id=id)
             except:
                 return Response({"error": "Tag not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -102,7 +102,7 @@ class TagDetailView(APIView):
 class TaskAPIView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            tasks = Task.objects.all().order_by('id').filter(active=True)
+            tasks = Task.objects.all().order_by('id').filter(active=True).filter(card__user_id=request.user.id)
 
             paginator = PageNumberPagination()
             paged = paginator.paginate_queryset(tasks, request)
@@ -133,7 +133,7 @@ class TaskAPIView(APIView):
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                task = Task.objects.filter(active=True).get(id=id)
+                task = Task.objects.filter(active=True).filter(card__user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -160,7 +160,7 @@ class TaskDetailView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
-                task = Task.objects.filter(active=True).get(id=id)
+                task = Task.objects.filter(active=True).filter(card__user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
             serializer = TaskSerializer(task)
@@ -173,7 +173,7 @@ class TaskDetailView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
         if request.user.is_authenticated:
             try:
-                task = Task.objects.filter(active=True).get(id=id)
+                task = Task.objects.filter(active=True).filter(card__user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -192,7 +192,7 @@ class CardAPIView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
             if request.user.is_authenticated:
-                cards = Card.objects.all().order_by('id').filter(active=True)
+                cards = Card.objects.all().order_by('id').filter(active=True).filter(user_id=request.user.id)
 
                 paginator = PageNumberPagination()
                 paged = paginator.paginate_queryset(cards, request)
@@ -221,7 +221,7 @@ class CardAPIView(APIView):
                 return Response({"error": "Identifier required"}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                card = Card.objects.filter(active=True).get(id=id)
+                card = Card.objects.filter(active=True).filter(user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -230,7 +230,7 @@ class CardAPIView(APIView):
 
             if request.data.get('tags') is not None:
                 for item in request.data.get('tags'):
-                    saved_item = Tag.objects.filter(active=True).get(id=item['id'])
+                    saved_item = Tag.objects.filter(active=True).filter(user_id=request.user.id).get(id=item['id'])
                     card.tags.add(saved_item)
 
             if request.data.get('finished') is True:
@@ -250,7 +250,7 @@ class CardDetailView(APIView):
     def get(self, request, id):
         if request.user.is_authenticated:
             try:
-                card = Card.objects.filter(active=True).get(id=id)
+                card = Card.objects.filter(active=True).filter(user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
             serializer = CardSerializer(card)
@@ -263,7 +263,7 @@ class CardDetailView(APIView):
             return Response({"error": "Identifier required"}, status=status.HTTP_404_NOT_FOUND)
         if request.user.is_authenticated:
             try:
-                card = Card.objects.filter(active=True).get(id=id)
+                card = Card.objects.filter(active=True).filter(user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -284,7 +284,7 @@ class CardTasksView(APIView):
             if id is None:
                 return Response({"error": "Identifier is required"}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                card = Card.objects.filter(active=True).get(id=id)
+                card = Card.objects.filter(active=True).filter(user_id=request.user.id).get(id=id)
             except:
                 return Response({"error": "Card not found"}, status=status.HTTP_404_NOT_FOUND)
             try:
@@ -385,12 +385,11 @@ class UserCardsView(APIView):
         if request.user.is_authenticated:
             if id is None:
                 return Response({"error": "Identifier is required"}, status=status.HTTP_400_BAD_REQUEST)
-            try:
-                user = User.objects.filter(is_active=True).get(id=id)
-            except:
+            user = User.objects.filter(is_active=True).get(id=id)
+            if user is None:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             try:
-                cards = Card.objects.filter(active=True).filter(user_id=id)
+                cards = Card.objects.filter(active=True).filter(user_id=request.user.id).filter(user_id=id)
                 return Response(CardSerializer(cards, many=True).data, status=status.HTTP_200_OK)
             except:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
