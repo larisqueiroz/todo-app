@@ -288,12 +288,9 @@ class UserAPIView(APIView):
                 serializer = UserSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 user = User.objects.all().filter(username=request.data['username']).filter(is_active=True).first()
-                print(user)
                 if user is not None:
                     return Response({"erros": "user already exists."}, status=status.HTTP_400_BAD_REQUEST)
-                print("2")
                 user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
-                print("3")
                 token = Token.objects.create(user=user)
                 user.save()
                 return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
@@ -330,7 +327,6 @@ class UserAPIView(APIView):
                 saved.email = request.data['email']
                 saved.save()
                 user = User.objects.filter(is_active=True).filter(id=id).values('id', 'username', 'email', 'is_active').first()
-                print(type(user))
 
                 return Response(user, status.HTTP_200_OK)
 
@@ -406,18 +402,14 @@ class UserLogin(APIView):
     def post(self, request):
         try:
             saved = User.objects.filter(is_active=True).get(username=request.data['username'])
-            print(request.data['username'])
-            print(request.data['password'])
             if saved is None:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             if not saved.check_password(request.data['password']):
                 return Response({"error": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
             user = authenticate(request=request, username=request.data['username'], password=request.data['password'])
-            print(user.backend)
             if user is not None:
                 try:
                     login(request=request, user=user, backend=user.backend)
-                    print(user.is_authenticated)
                     token, created = Token.objects.get_or_create(user=user)
                     return Response({"username": request.data['username'], "token": token.key}, status=status.HTTP_200_OK)
                 except ValueError as e:
