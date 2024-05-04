@@ -1,0 +1,827 @@
+{
+	"info": {
+		"_postman_id": "d1ac4237-9b92-4820-ae45-2a9c32de9fe2",
+		"name": "ToDo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22977721"
+	},
+	"item": [
+		{
+			"name": "Users CRUD",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var csrfToken = postman.getResponseCookie('csrftoken').value;\r",
+									"pm.globals.set(\"csrf\", csrfToken);\r",
+									"console.log(csrfToken)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/login/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"email\": \"user2@email.com.br\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-CSRFToken",
+								"value": "{{csrf}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/users/3/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token fc2343d206de8307fdcf98aaccd894b629f1a284",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"username\": \"user2\",\r\n            \"email\": \"user2@email.com\",\r\n            \"password\": \"user2@123\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/{id}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/users/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/{id}/cards",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/users/2/cards/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"2",
+								"cards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/{id}/tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/users/2/tags/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"2",
+								"tags",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/logout/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"var xsrfCookie = postman.getResponseCookie(\"csrftoken\");\r",
+							"\r",
+							"postman.setEnvironmentVariable('csrftoken', xsrfCookie.xsrfCookie);"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Cards CRUD",
+			"item": [
+				{
+					"name": "cards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/cards/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Things to buy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/cards/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"id\": \"584df5cd-9010-4898-b276-e6b0f640f1b4\",\r\n            \"name\": \"Vacation\",\r\n            \"finished\": true\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/cards/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/cards/a4454d01-1a9a-433b-a0dd-aef95b1e9a4d/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								"a4454d01-1a9a-433b-a0dd-aef95b1e9a4d",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards/{id}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/cards/7d8fc69c-9a0e-4ebf-bb13-886d38494e38/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								"7d8fc69c-9a0e-4ebf-bb13-886d38494e38",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards/{id}/tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/cards/7d8fc69c-9a0e-4ebf-bb13-886d38494e38/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"cards",
+								"7d8fc69c-9a0e-4ebf-bb13-886d38494e38",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tags CRUD",
+			"item": [
+				{
+					"name": "tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tags",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tags",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Food\",\r\n    \"color\": \"#964b00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/tags/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tags",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tags",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"id\": \"16d5e842-31e4-4436-83b6-628b45ce1834\",\r\n            \"name\": \"Important!\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/tags/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tags",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tags/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tags/0e984bc8-3f9d-4fc0-8e40-fa955f2cfc6f/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tags",
+								"0e984bc8-3f9d-4fc0-8e40-fa955f2cfc6f",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tags/{id}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tags/fcb1d6d4-78f7-4939-b8f0-9dc3c744b393/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tags",
+								"fcb1d6d4-78f7-4939-b8f0-9dc3c744b393",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks CRUD",
+			"item": [
+				{
+					"name": "tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Apples\",\r\n    \"card_id\": \"f40c8085-be54-4440-a658-075b0c0b375c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/tasks/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"id\": \"a67061f6-436f-40b0-9b71-25a6f31ba6a3\",\r\n            \"description\": \"Study for presentation ASAP\",\r\n            \"card\": {\r\n                \"id\": \"7d8fc69c-9a0e-4ebf-bb13-886d38494e38\",\r\n                \"name\": \"Presentation\",\r\n                \"created_at\": \"2024-05-01T23:48:47.393142Z\",\r\n                \"updated_at\": \"2024-05-03T00:15:28.217401Z\",\r\n                \"active\": true,\r\n                \"tags\": [\r\n                    {\r\n                        \"id\": \"16d5e842-31e4-4436-83b6-628b45ce1834\",\r\n                        \"name\": \"Important\",\r\n                        \"color\": \"#0000FF\",\r\n                        \"created_at\": \"2024-05-03T00:14:10.507366Z\",\r\n                        \"updated_at\": \"2024-05-03T00:14:10.507366Z\",\r\n                        \"active\": true,\r\n                        \"username\": \"user1\"\r\n                    },\r\n                    {\r\n                        \"id\": \"fcb1d6d4-78f7-4939-b8f0-9dc3c744b393\",\r\n                        \"name\": \"Job\",\r\n                        \"color\": \"#008000\",\r\n                        \"created_at\": \"2024-05-01T22:00:19.862812Z\",\r\n                        \"updated_at\": \"2024-05-03T00:38:42.140422Z\",\r\n                        \"active\": true,\r\n                        \"username\": \"user1\"\r\n                    }\r\n                ],\r\n                \"user_id\": 2\r\n            },\r\n            \"finished\": true\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/tasks/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tasks/a30eb301-21f3-4dbc-bdce-a6f9fa906647/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								"a30eb301-21f3-4dbc-bdce-a6f9fa906647",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks/{id}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a335ba58493b73b5aa1ad45ce6fc164447d7c21f",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/tasks/a67061f6-436f-40b0-9b71-25a6f31ba6a3/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								"a67061f6-436f-40b0-9b71-25a6f31ba6a3",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
