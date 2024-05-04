@@ -20,18 +20,18 @@ from .views import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
-    path('tags/', TagAPIView.as_view(), name='categories'),
-    path('tags/<uuid:id>/', TagDetailView.as_view(), name='tag_by_id'),
-    path('tasks/', TaskAPIView.as_view(), name='tasks'),
-    path('tasks/<uuid:id>/', TaskDetailView.as_view(), name='task_by_id'),
-    path('cards/', CardAPIView.as_view(), name='cards'),
-    path('cards/<uuid:id>/', CardDetailView.as_view(), name='card_by_id'),
-    path('cards/<uuid:id>/tasks/', CardTasksView.as_view(), name='tasks_by_card'),
-    path('users/<int:id>/', UserDetailAPIView.as_view(), name='user_by_id'),
-    path('users/<int:id>/cards/', UserCardsView.as_view(), name='cards_by_user'),
-    path('users/<int:id>/tags/', UserTagsView.as_view(), name='tags_by_user'),
-    path('admin/', admin.site.urls),
-    path('users/', UserAPIView.as_view(), name='users'),
-    path('login/', UserLogin.as_view(), name='login'),
-    path('logout/', UserLogout.as_view(), name='logout')
+    path('tags', TagAPIView.as_view(), name='categories'),
+    path('tags/<uuid:id>', TagDetailView.as_view(), name='tag_by_id'),
+    path('tasks', TaskAPIView.as_view(), name='tasks'),
+    path('tasks/<uuid:id>', TaskDetailView.as_view(), name='task_by_id'),
+    path('cards', CardAPIView.as_view(), name='cards'),
+    path('cards/<uuid:id>', CardDetailView.as_view(), name='card_by_id'),
+    path('cards/<uuid:id>/tasks', CardTasksView.as_view(), name='tasks_by_card'),
+    path('users/<int:id>', UserDetailAPIView.as_view(), name='user_by_id'),
+    path('users/<int:id>/cards', UserCardsView.as_view(), name='cards_by_user'),
+    path('users/<int:id>/tags', UserTagsView.as_view(), name='tags_by_user'),
+    path('admin', admin.site.urls),
+    path('users', UserAPIView.as_view(), name='users'),
+    path('login', UserLogin.as_view(), name='login'),
+    path('logout', UserLogout.as_view(), name='logout')
 ]
